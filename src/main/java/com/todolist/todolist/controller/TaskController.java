@@ -1,9 +1,15 @@
 package com.todolist.todolist.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.todolist.todolist.dto.TaskDTO;
+import com.todolist.todolist.entity.Task; // Make sure to import Task here
+
+// import com.todolist.todolist.entity.Task; //* */
+
 import com.todolist.todolist.service.TaskService;
 
 import java.util.List;
@@ -14,25 +20,52 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    private TaskService TaskService;
+    private TaskService taskService;
 
-    @GetMapping("/getTasks")
-    public List<TaskDTO> getTasks() {
-        return TaskService.getAllTasks();
+   
+
+    @GetMapping("/getTasks") // done
+    public ResponseEntity<List<TaskDTO>> getTasks() {
+        try {
+            List<TaskDTO> tasks = taskService.getAllTasks();
+            return ResponseEntity.ok(tasks);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
-    @PostMapping("/saveTask") //add Task
-    public TaskDTO saveTask(@RequestBody TaskDTO TaskDTO) {
-        return TaskService.saveTask(TaskDTO);
+    @PostMapping("/saveTask") // done
+    public TaskDTO saveTask(@RequestBody TaskDTO taskDTO) {
+        return taskService.saveTask(taskDTO);
     }
 
-    @PutMapping("/updateTask")
-    public TaskDTO updateTask(@RequestBody TaskDTO TaskDTO) {
-        return TaskService.updateTask(TaskDTO);
+    // -----------------------------------------
+
+    @PutMapping("/updateTask/{id}")
+    public ResponseEntity<Task> updateTask(@PathVariable Integer id, @RequestBody TaskDTO taskDTO) {
+        try {
+            System.out.println(
+                    "Received update request for task ID: " + id + " with isComplete: " + taskDTO.is_complete());
+            Task updatedTask = taskService.updateTask(id, taskDTO.is_complete());
+            System.out.println("Returning updated task: " + updatedTask);
+            return ResponseEntity.ok(updatedTask);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    // -----------------------------------------
+
+    @DeleteMapping("/deleteTask/{id}") // done
+    public ResponseEntity<Boolean> deleteTask(@PathVariable Integer id) {
+        try {
+            boolean result = taskService.deleteTask(id);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
     }
 
-    @DeleteMapping("/deleteTask")
-    public boolean deleteTask(@RequestBody TaskDTO TaskDTO) {
-        return TaskService.deleteTask(TaskDTO);
-    }
 }

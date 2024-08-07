@@ -1,6 +1,9 @@
 package com.todolist.todolist.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -8,20 +11,26 @@ import jakarta.persistence.Table;
 @Table
 public class Task {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String Title;
-    private boolean isComplete;
+    
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "is_complete")
+    private boolean is_complete;
+    
 
     public Integer getId() {
         return id;
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
-    public boolean isComplete() {
-        return isComplete;
+    public boolean is_complete() {
+        return is_complete;
     }
 
     public void setId(Integer id) {
@@ -29,17 +38,19 @@ public class Task {
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
-    public void setComplete(boolean isComplete) {
-        this.isComplete = isComplete;
+   
+    public void setComplete(boolean is_complete) {
+        this.is_complete = is_complete;
     }
 
-    public Task(Integer id, String title, boolean isComplete) {
+
+    public Task(Integer id, String title, boolean is_complete) {
         this.id = id;
-        Title = title;
-        this.isComplete = isComplete;
+        this.title = title;
+        this.is_complete = is_complete;
     }
 
     public Task() {
@@ -47,7 +58,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task [id=" + id + ", Title=" + Title + ", isComplete=" + isComplete + "]";
+        return "Task [id=" + id + ", Title=" + title + ", is_complete=" + is_complete + "]";
     }
 
 }

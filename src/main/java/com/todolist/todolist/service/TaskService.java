@@ -8,38 +8,68 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Service
 @Transactional
 public class TaskService {
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     @Autowired
-    private TaskRepository TaskRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
     private ModelMapper modelMapper;
+    // -----------------------------------------
 
-    public TaskDTO saveTask(TaskDTO TaskDTO){
-        TaskRepository.save(modelMapper.map(TaskDTO, Task.class));
-        return TaskDTO;
+    public TaskDTO saveTask(TaskDTO taskDTO) {
+        Task task = modelMapper.map(taskDTO, Task.class);
+        Task savedTask = taskRepository.save(task);
+        System.out.println("---------------------------");
+
+        logger.info("Saved Task: {}", savedTask);
+        return modelMapper.map(savedTask, TaskDTO.class);
     }
+    // -----------------------------------------
 
-    public List<TaskDTO> getAllTasks(){
-        List<Task> TaskList = TaskRepository.findAll();
-        return modelMapper.map(TaskList, new TypeToken<List<TaskDTO>>(){}.getType());
+    public List<TaskDTO> getAllTasks() {
+        List<Task> taskList = taskRepository.findAll();
+        return modelMapper.map(taskList, new TypeToken<List<TaskDTO>>() {
+        }.getType());
     }
+    // -----------------------------------------
 
-    public TaskDTO updateTask(TaskDTO TaskDTO){
-        TaskRepository.save(modelMapper.map(TaskDTO,Task.class));
-        return TaskDTO;
+    public Task updateTask(Integer id, boolean is_complete) { // returns task
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        System.out.println("---------------------------");
+
+        System.out.println("Before update: " + existingTask.is_complete());
+        System.out.println("---------------------------");
+        existingTask.setComplete(is_complete);
+        Task updatedTask = taskRepository.save(existingTask);
+
+        System.out.println("Updated Task Completion Status ***after: " + updatedTask.is_complete());
+        System.out.println("---------------------------");
+
+        System.out.println(updatedTask.toString() + "  :tst");
+
+        return updatedTask;
     }
+    // -----------------------------------------
 
-    public boolean deleteTask(TaskDTO TaskDTO){
-        TaskRepository.delete(modelMapper.map(TaskDTO, Task.class));
-        return true;
+    public boolean deleteTask(Integer id) {
+        try {
+            Task task = taskRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Task not founddd"));
+
+            taskRepository.delete(task);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("Task deletion failed", e);
+        }
     }
-
 
 }
