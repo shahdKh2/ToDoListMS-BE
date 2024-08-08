@@ -36,9 +36,13 @@ public class TaskService {
 
     public List<TaskDTO> getAllTasks() {
         List<Task> taskList = taskRepository.findAll();
-        return modelMapper.map(taskList, new TypeToken<List<TaskDTO>>() {
-        }.getType());
+        taskList.forEach(task -> logger.info("Fetched Task: {}", task));
+        List<TaskDTO> taskDTOList = modelMapper.map(taskList, new TypeToken<List<TaskDTO>>() {}.getType());
+        taskDTOList.forEach(taskDTO -> logger.info("Mapped TaskDTO: {}", taskDTO)); // *****
+        return taskDTOList;
     }
+
+
     // -----------------------------------------
 
     public Task updateTask(Integer id, boolean is_complete) { // returns task

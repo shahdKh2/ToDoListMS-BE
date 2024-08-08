@@ -22,17 +22,20 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-   
 
-    @GetMapping("/getTasks") // done
-    public ResponseEntity<List<TaskDTO>> getTasks() {
-        try {
-            List<TaskDTO> tasks = taskService.getAllTasks();
-            return ResponseEntity.ok(tasks);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    //    @GetMapping("/getTasks") // done
+//    public ResponseEntity<List<TaskDTO>> getTasks() {
+//        try {
+//            List<TaskDTO> tasks = taskService.getAllTasks();
+//            return ResponseEntity.ok(tasks);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
+    @GetMapping("/getTasks")
+    public List<TaskDTO> getAllTasks() {
+        return taskService.getAllTasks();
     }
 
     @PostMapping("/saveTask") // done

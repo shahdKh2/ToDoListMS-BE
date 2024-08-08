@@ -1,5 +1,7 @@
 package com.todolist.todolist;
 
+import com.todolist.todolist.dto.TaskDTO;
+import com.todolist.todolist.entity.Task;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,8 +14,15 @@ public class TodolistApplication {
 		SpringApplication.run(TodolistApplication.class, args);
 	}
 
-	  @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
+
+
+	@Bean
+	public ModelMapper modelMapper() {
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.typeMap(Task.class, TaskDTO.class)
+
+				.addMappings(mapper -> mapper.map(Task::is_complete, TaskDTO::setComplete));
+		return modelMapper;
+	}
+
 }
