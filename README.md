@@ -1,7 +1,7 @@
 
 # SpringBoot-ToDoListMS Back-End
 
-This is the back-end of the To-Do List Management System, built with Spring Boot. It provides a RESTful API to manage tasks.
+This is the back-end of the To-Do List Management System, built with Spring Boot. It provides a RESTful APIs to manage tasks.
 
 ## Features
 
